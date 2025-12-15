@@ -1,5 +1,5 @@
 import streamlit as st
-from data.queries import q_filter_os
+from data.queries_map import q_filter_os
 
 # Filtro selector de OS
 
