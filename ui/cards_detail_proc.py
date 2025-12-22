@@ -1,5 +1,5 @@
 import streamlit as st
-from data.quieries_detail_proc import q_prest_pa, q_sin_pa_30
+from data.queries_detail_proc import q_prest_pa, q_sin_pa_30
 
 # Cant de alumnos, cant de prestaciones y alum. con dos prest.
 def cant_details(conn):
