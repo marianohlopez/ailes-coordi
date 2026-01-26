@@ -18,3 +18,14 @@ def filtro_os(conn):
       os_condition = f"AND o.os_nombre = '{selected_os}'"
       
   return os_condition
+
+# Filtro de Año
+
+def year_filter(year):
+
+  # Condición de año en la consulta
+  year_condition = ""
+  if year != "":
+      year_condition = f"AND prestacion_anio = {year}"
+
+  return year_condition

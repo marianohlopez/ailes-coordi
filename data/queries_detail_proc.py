@@ -8,9 +8,8 @@ def q_prest_pa(conn):
       COUNT(DISTINCT CASE WHEN prestacion_pa IS NULL THEN prestacion_id END) AS prestaciones_sin_pa
     FROM v_prestaciones
     WHERE
-      prestacion_estado IN (0, 1)
+      prestacion_estado = 1
       AND prestipo_nombre_corto != 'TERAPIAS'
-      AND coordi_apellido IS NOT NULL
   """
   df_prest_alum = pd.read_sql(q_prest_alum, conn)
 
@@ -20,7 +19,7 @@ def q_prest_pa(conn):
 
   return prest_con_pa, prest_sin_pa
 
-#--- Tarjeta - cant. de alumnos con dos prestaciones
+#--- Tarjeta - cant. de prest. sin pa por mas de 30 dias
 
 def q_sin_pa_30(conn):
   query = """ 
@@ -60,6 +59,7 @@ def q_mod_prest(conn):
     FROM v_prestaciones
     WHERE
       prestacion_estado IN (0, 1)
+      AND prestacion_anio = 2026
       AND prestipo_nombre_corto != 'TERAPIAS'
       AND coordi_apellido IS NOT NULL
       AND prestacion_pa IS NOT NULL
@@ -69,9 +69,9 @@ def q_mod_prest(conn):
 
 #--- Gráfico de barras con altas y bajas de prestaciones
 
-def q_altas_bajas(conn):
+def q_altas_bajas(conn, year_condition):
    
-  q_altas_bajas = """
+  q_altas_bajas = f"""
     SELECT 
         periodo,
         SUM(cant_altas) AS cant_altas,
@@ -83,7 +83,7 @@ def q_altas_bajas(conn):
             0 AS cant_bajas
         FROM v_prestaciones
         WHERE prestacion_fec_pase_activo IS NOT NULL
-        AND prestacion_anio IN (2025, 2026)
+        {year_condition}
         AND prestipo_nombre_corto != "TERAPIAS"
         GROUP BY DATE_FORMAT(prestacion_fec_pase_activo, '%%Y-%%m')
         
@@ -96,7 +96,7 @@ def q_altas_bajas(conn):
         FROM v_prestaciones
         WHERE prestacion_fec_baja IS NOT NULL
         AND prestacion_fec_pase_activo IS NOT NULL
-        AND prestacion_anio IN (2025, 2026)
+        {year_condition}
         AND prestipo_nombre_corto != "TERAPIAS"
         GROUP BY DATE_FORMAT(prestacion_fec_baja, '%%Y-%%m')
     ) t

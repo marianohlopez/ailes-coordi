@@ -7,17 +7,17 @@ def q_prest_alum(conn):
       COUNT(DISTINCT a.alumno_id) AS cant_alumnos,
       COUNT(DISTINCT p.prestacion_id) AS cant_prestaciones
     FROM 
-      v_os o
+      v_prestaciones p
+    LEFT JOIN 
+      v_os o ON p.prestacion_os = o.os_id
     JOIN 
-      v_prestaciones p ON p.prestacion_os = o.os_id
-    JOIN 
-      v_alumnos a ON p.alumno_id = a.alumno_id
+      v_alumnos a ON p.prestacion_alumno = a.alumno_id
     WHERE 
-      p.prestacion_estado_descrip = "ACTIVA" COLLATE utf8mb4_0900_ai_ci
-      AND prestacion_anio = 2025
+      p.prestacion_estado = 1
+      AND prestacion_anio = 2026
       AND prestipo_nombre_corto != 'TERAPIAS'
       AND p.prestacion_id NOT IN (521,1950)
-      AND p.alumno_apellido != "Machado (Prueba)"
+      AND p.prestacion_alumno != 522
   """
   df_prest_alum = pd.read_sql(q_prest_alum, conn)
 
@@ -40,11 +40,11 @@ def q_two_prest(conn):
       FROM 
         v_prestaciones
       WHERE 
-        prestacion_estado_descrip = 'ACTIVA' COLLATE utf8mb4_0900_ai_ci
-        AND prestacion_anio = 2025
+        prestacion_estado = 1
+        AND prestacion_anio = 2026
         AND prestipo_nombre_corto != 'TERAPIAS'
         AND prestacion_id NOT IN (521,1950)
-        AND alumno_apellido != 'Machado (Prueba)'
+        AND p.prestacion_alumno != 522
       GROUP BY 
         prestacion_alumno
       HAVING 
@@ -66,8 +66,8 @@ def q_cant_coordis(conn):
       ON p.prestacion_coordi = c.coordi_id
     WHERE 
       p.prestacion_estado = 1
+      AND p.prestacion_anio = 2026
       AND p.prestacion_coordi IS NOT NULL
-      AND p.prestacion_coordi NOT IN (2, 14)
  """
   df = pd.read_sql(query, conn)
 
@@ -85,6 +85,7 @@ def q_alum_coordis(conn):
     WHERE
       prestacion_estado IN (0, 1)
       AND prestipo_nombre_corto != 'TERAPIAS'
+      AND prestacion_anio = 2026
       AND coordi_apellido IS NOT NULL
       AND prestacion_coordi NOT IN (2, 14)
     GROUP BY coordi_nombre, coordi_apellido

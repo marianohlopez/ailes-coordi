@@ -1,6 +1,39 @@
 import streamlit as st
 import plotly.express as px
-from data.queries_detail_proc import q_mod_prest, q_altas_bajas
+from data.queries_detail_proc import q_prest_pa, q_mod_prest, q_altas_bajas
+
+#--- Grafico de anillo, Prest con y sin PA
+
+def chart_prest_pa(conn):
+
+    prest_con_pa, prest_sin_pa = q_prest_pa(conn)
+
+    values = [prest_con_pa, prest_sin_pa]
+    labels = ["Con PA", "Sin PA"]
+
+    fig = px.pie(
+        values=values,
+        names=labels,
+        hole=0.6
+    )
+
+    # Medio anillo
+    fig.update_traces(
+        rotation=90,
+        textinfo="percent+label",
+        hovertemplate="%{label}<br>%{value} (%{percent})"
+    )
+
+    fig.update_layout(
+        title=" ",
+        title_x=0.5,
+        height=300,
+        showlegend=True,
+        margin=dict(t=40, b=0),
+    )   
+
+    st.plotly_chart(fig, use_container_width=True)
+
 
 # GRÁFICO DE BARRAS - MODALIDADES DE PA
 
@@ -34,11 +67,11 @@ def chart_mod_prest(conn):
 
 # Gráfico de lineas - altas y bajas de prestaciones
 
-def chart_altas_bajas(conn):
+def chart_altas_bajas(conn, year_condition):
     
     initial_balance = 0
 
-    df = q_altas_bajas(conn)
+    df = q_altas_bajas(conn, year_condition)
 
     # acumulados
     df["bajas_acum"] = df["cant_bajas"].cumsum()
