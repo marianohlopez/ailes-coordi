@@ -44,7 +44,7 @@ def q_two_prest(conn):
         AND prestacion_anio = 2026
         AND prestipo_nombre_corto != 'TERAPIAS'
         AND prestacion_id NOT IN (521,1950)
-        AND p.prestacion_alumno != 522
+        AND prestacion_alumno != 522
       GROUP BY 
         prestacion_alumno
       HAVING 

@@ -73,32 +73,32 @@ def q_altas_bajas(conn, year_condition):
    
   q_altas_bajas = f"""
     SELECT 
-        periodo,
-        SUM(cant_altas) AS cant_altas,
-        SUM(cant_bajas) AS cant_bajas
+      periodo,
+      SUM(cant_altas) AS cant_altas,
+      SUM(cant_bajas) AS cant_bajas
     FROM (
-        SELECT 
-            DATE_FORMAT(prestacion_fec_pase_activo, '%%Y-%%m') AS periodo,
-            COUNT(*) AS cant_altas,
-            0 AS cant_bajas
-        FROM v_prestaciones
-        WHERE prestacion_fec_pase_activo IS NOT NULL
-        {year_condition}
-        AND prestipo_nombre_corto != "TERAPIAS"
-        GROUP BY DATE_FORMAT(prestacion_fec_pase_activo, '%%Y-%%m')
-        
-        UNION ALL
-        
-        SELECT 
-            DATE_FORMAT(prestacion_fec_baja, '%%Y-%%m') AS periodo,
-            0 AS cant_altas,
-            COUNT(*) AS cant_bajas
-        FROM v_prestaciones
-        WHERE prestacion_fec_baja IS NOT NULL
-        AND prestacion_fec_pase_activo IS NOT NULL
-        {year_condition}
-        AND prestipo_nombre_corto != "TERAPIAS"
-        GROUP BY DATE_FORMAT(prestacion_fec_baja, '%%Y-%%m')
+      SELECT 
+        DATE_FORMAT(prestacion_fec_pase_activo, '%%Y-%%m') AS periodo,
+        COUNT(*) AS cant_altas,
+        0 AS cant_bajas
+      FROM v_prestaciones
+      WHERE prestacion_fec_pase_activo IS NOT NULL
+      {year_condition}
+      AND prestipo_nombre_corto != "TERAPIAS"
+      GROUP BY DATE_FORMAT(prestacion_fec_pase_activo, '%%Y-%%m')
+      
+      UNION ALL
+      
+      SELECT 
+        DATE_FORMAT(prestacion_fec_baja, '%%Y-%%m') AS periodo,
+        0 AS cant_altas,
+        COUNT(*) AS cant_bajas
+      FROM v_prestaciones
+      WHERE prestacion_fec_baja IS NOT NULL
+      AND prestacion_fec_pase_activo IS NOT NULL
+      {year_condition}
+      AND prestipo_nombre_corto != "TERAPIAS"
+      GROUP BY DATE_FORMAT(prestacion_fec_baja, '%%Y-%%m')
     ) t
     GROUP BY periodo
     ORDER BY periodo;
