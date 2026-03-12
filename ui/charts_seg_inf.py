@@ -1,6 +1,6 @@
 import streamlit as st
 import plotly.express as px
-from data.queries_seg_inf import q_seg_coordi, q_inf_cat
+from data.queries_seg_inf import q_seg_coordi, q_inf_cat, q_seg_tecnic
 
 # GRÁFICO DE BARRAS - SEGUIMIENTOS POR COORDINADORA
 def chart_seg_coordi(conn):
@@ -45,6 +45,53 @@ def chart_seg_coordi(conn):
   )
 
   st.plotly_chart(fig_seg_coordi, use_container_width=True)
+
+# GRÁFICO DE BARRAS - SEGUIMIENTOS POR EQUIPO TÉCNICO
+def chart_seg_tecnic(conn):
+
+  df_seg_tecnic = q_seg_tecnic(conn)
+
+  fig_seg_tecnic = px.bar(
+    df_seg_tecnic,
+    x='nombre_carga',
+    y='seguim_total',
+    title='Seguimientos por equipo técnico',
+    text='seguim_total',
+    color_discrete_sequence=["green"],
+    custom_data=[
+      'nombre_carga',
+      'entr_admision',
+      'interc_con_prof',
+      'superv',
+      'interc_con_flia',
+      'seguim',
+      'interc_con_esc',
+      'seguim_total'
+    ]
+  )
+
+  fig_seg_tecnic.update_traces(
+    hovertemplate=
+    "<b>%{customdata[0]}</b><br><br>"
+    "Entrevista de admisión: %{customdata[1]}<br>"
+    "Intercambio con profesionales: %{customdata[2]}<br>"
+    "Supervisión: %{customdata[3]}<br>"
+    "Intercambio con familias: %{customdata[4]}<br>"
+    "Seguimiento: %{customdata[5]}<br>"
+    "Intercambio con escuela: %{customdata[6]}<br><br>"
+    "<b>Total: %{customdata[7]}</b><extra></extra>",
+    textposition='outside'
+  )
+
+  fig_seg_tecnic.update_layout(
+    title_x=0.4,
+    height=450,
+    showlegend=False,
+    xaxis_title="Equipo técnico",
+    yaxis_title="Cant. de seguimientos"
+  )
+
+  st.plotly_chart(fig_seg_tecnic, use_container_width=True)
 
 # GRÁFICO DE BARRAS - INFORMES POR CATEGORIA
 def chart_inf_cat(conn):

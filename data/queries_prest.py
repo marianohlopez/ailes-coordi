@@ -89,6 +89,7 @@ def q_alum_coordis(conn):
       AND coordi_apellido IS NOT NULL
       AND prestacion_coordi NOT IN (2, 14)
     GROUP BY coordi_nombre, coordi_apellido
+    ORDER BY prestaciones
   """
   return pd.read_sql(query, conn)
 

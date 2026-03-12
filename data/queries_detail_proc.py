@@ -63,7 +63,9 @@ def q_mod_prest(conn):
       AND prestipo_nombre_corto != 'TERAPIAS'
       AND coordi_apellido IS NOT NULL
       AND prestacion_pa IS NOT NULL
-      GROUP BY calcpagopamod_nombre;
+    GROUP BY calcpagopamod_nombre
+    ORDER BY
+      cant
   """
   return pd.read_sql(query, conn)
 

@@ -1,14 +1,15 @@
 import streamlit as st
-from data.queries_seg_inf import q_inf_cat, q_seg_coordi
+from data.queries_seg_inf import q_inf_cat, q_seg_coordi, q_seg_tecnic
 
 # Cant de Seguimientos e informes
 def cant_seg_inf(conn):
 
   df_inf_total = q_inf_cat(conn)
-  df_seg_total = q_seg_coordi(conn)
+  df_seg_total_coordi = q_seg_coordi(conn)
+  df_seg_total_tecnic = q_seg_tecnic(conn)
 
   inf_total = df_inf_total['cant'].sum()
-  seg_total = df_seg_total['seguim_total'].sum()
+  seg_total = df_seg_total_coordi['seguim_total'].sum() + df_seg_total_tecnic['seguim_total'].sum()
 
   card_seg = f"""
     <div class="card-container">
