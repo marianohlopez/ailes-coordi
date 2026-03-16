@@ -12,17 +12,12 @@ def q_seg_coordi(conn):
       COUNT(DISTINCT CASE WHEN s.segcat_nombre = 'Intercambio con escuela' THEN s.segalum_id END) AS interc_con_esc,
       COUNT(DISTINCT s.segalum_id) AS seguim_total
     FROM
-      v_prestaciones p
-    JOIN v_seguimientos s
-      ON p.prestacion_id = s.segalum_prestacion
+      v_seguimientos s
     JOIN v_coordinadores c
       ON s.usuario_carga_id = c.user_id
     WHERE
-      p.prestacion_estado IN (0, 1)
-      AND p.prestipo_nombre_corto != 'TERAPIAS'
-      AND s.segalum_rol_carga = 'COORDI'
+      s.segalum_rol_carga = 'COORDI'
       AND YEAR(s.segalum_fec_carga) = 2026 
-      AND p.prestacion_anio = 2026
     GROUP BY 
       nombre_coordi
     ORDER BY
@@ -45,8 +40,6 @@ def q_seg_tecnic(conn):
       COUNT(DISTINCT s.segalum_id) AS seguim_total
     FROM
       v_seguimientos s
-    LEFT JOIN v_prestaciones p
-      ON s.segalum_prestacion = p.prestacion_id
     JOIN v_users u
       ON s.usuario_carga_id = u.user_id
     WHERE
