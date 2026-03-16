@@ -12,12 +12,16 @@ def q_seg_coordi(conn):
       COUNT(DISTINCT CASE WHEN s.segcat_nombre = 'Intercambio con escuela' THEN s.segalum_id END) AS interc_con_esc,
       COUNT(DISTINCT s.segalum_id) AS seguim_total
     FROM
-      v_seguimientos s
+      v_prestaciones p
+    JOIN v_seguimientos s
+      ON p.prestacion_id = s.segalum_prestacion
     JOIN v_coordinadores c
       ON s.usuario_carga_id = c.user_id
     WHERE
-      s.segalum_rol_carga = 'COORDI'
+      (p.prestacion_estado IN (0, 1) OR p.prestacion_estado IS NULL)
+      AND s.segalum_rol_carga = 'COORDI'
       AND YEAR(s.segalum_fec_carga) = 2026 
+      AND (p.prestacion_anio = 2026 OR p.prestacion_anio IS NULL)
     GROUP BY 
       nombre_coordi
     ORDER BY
@@ -40,11 +44,15 @@ def q_seg_tecnic(conn):
       COUNT(DISTINCT s.segalum_id) AS seguim_total
     FROM
       v_seguimientos s
+    LEFT JOIN v_prestaciones p
+      ON p.prestacion_id = s.segalum_prestacion
     JOIN v_users u
       ON s.usuario_carga_id = u.user_id
     WHERE
-      (s.segalum_rol_carga = 'EQUIPO_TECNICO' OR u.user_id = 17)
+      (p.prestacion_estado IN (0, 1) OR p.prestacion_estado IS NULL)
+      AND (s.segalum_rol_carga = 'EQUIPO_TECNICO' OR u.user_id = 17)
       AND YEAR(s.segalum_fec_carga) = 2026 
+      AND (p.prestacion_anio = 2026 OR p.prestacion_anio IS NULL)
     GROUP BY 
       nombre_carga
     ORDER BY
