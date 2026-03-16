@@ -51,7 +51,7 @@ def q_seg_tecnic(conn):
       ON s.usuario_carga_id = u.user_id
     WHERE
       p.prestacion_estado IN (0, 1)
-      AND s.segalum_rol_carga = 'EQUIPO_TECNICO'
+      AND (s.segalum_rol_carga = 'EQUIPO_TECNICO' OR u.user_id = 17)
       AND YEAR(s.segalum_fec_carga) = 2026 
       AND p.prestacion_anio = 2026
     GROUP BY 
