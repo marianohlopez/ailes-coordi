@@ -1,5 +1,6 @@
 import streamlit as st
 from data.connection import get_connection
+from data.mongo_db import register
 from ui.cards import cant_alum_prest, cant_coordis
 from ui.charts_prest import chart_alum_coordis
 
@@ -16,6 +17,9 @@ def config():
   st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
 
 config()
+
+# Registrar visita una sola vez por día
+register(st)
 
 conn = get_connection()
 
